@@ -2,7 +2,7 @@ fs   = require('fs')
 path = require('path')
 
 class ImageFiles
-  @imageDir: path.join(__dirname, '..', '.generated', 'img')
+  @imageDir: path.join(__dirname, '..', 'app', 'img')
 
   @dirFor: (type) =>
     if type then path.join(@imageDir, type) else @imageDir
