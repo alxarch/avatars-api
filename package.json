@@ -2,10 +2,9 @@
   "name": "potato-avatars",
   "version": "0.1.0",
   "description": "Just the engine from adorable-avatars",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "prepublish": "coffee -c -b -m -o lib src/",
-    "test": "node_modules/.bin/mocha"
+    "prepublish": "coffee -c -b -m -o lib src/"
   },
   "author": "Sigalas Alexandros <alxarch@gmail.com>",
   "license": "MIT",
