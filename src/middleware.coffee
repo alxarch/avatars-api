@@ -1,4 +1,5 @@
 _ = require "lodash"
+# TODO: Add cache-control headers / options
 Avatars = require "./avatars"
 module.exports = (options) ->
 	options = {requestSize, requestId} = _.defaults {}, options,
