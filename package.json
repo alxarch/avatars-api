@@ -1,6 +1,6 @@
 {
   "name": "potato-avatars",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Just the engine from adorable-avatars",
   "main": "lib/index.js",
   "scripts": {

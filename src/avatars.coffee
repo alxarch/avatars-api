@@ -28,6 +28,7 @@ class PotatoAvatars
 			minSize: 40
 			maxSize: 400
 			hashingFn: (sum, n, i) -> if i % 2 then n + i else n - i
+			cacheDir: null
 		@eyes = []
 		@mouth = []
 		@nose = []
@@ -50,7 +51,7 @@ class PotatoAvatars
 			@nose = @nose.concat nose
 
 	index: (string) ->
-		buffer = new Buffer _path.basename(string).replace(/\.(png|jpe?g|gif)/g, "")
+		buffer = new Buffer @identifier string
 		pos = Array::reduce.call buffer, @options.hashingFn, 0
 		buffer.length + Math.abs pos
 
@@ -89,3 +90,5 @@ class PotatoAvatars
 			.stream('png')
 
 	stream: (identifier, size) -> @combine @face(identifier), size
+
+	identifier: (string) -> "#{string}".replace /\.(png|jpe?g|gif)$/, ""
