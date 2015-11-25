@@ -24,31 +24,28 @@ class PotatoAvatars
 	constructor: (options) ->
 		@options = _.defaults {}, options,
 			assets: _path.resolve __dirname, "../assets"
+			types: ["eyes", "mouth", "nose"]
 			colors: defaultColors
 			minSize: 40
 			maxSize: 400
 			hashingFn: (sum, n, i) -> if i % 2 then n + i else n - i
 			cacheDir: null
-		@eyes = []
-		@mouth = []
-		@nose = []
+		@assets = {}
+		for type in @options.types
+			@assets[type] = []
 		@colors = @options.colors
 		@loadAssets @options.assets
 
 	loadAssets: (dir) ->
-		Promise.all [
-			readdir "#{dir}/eyes"
-			readdir "#{dir}/mouth"
-			readdir "#{dir}/nose"
-		]
+		{types} = @options
+		Promise.all types.map (type) -> readdir "#{dir}/#{type}"
 		.map (files, i) ->
-			path = "#{dir}/#{['eyes', 'mouth', 'nose'][i]}"
+			path = "#{dir}/#{types[i]}"
 			for file in files when file.match /\.png$/
 				"#{path}/#{file}"
-		.then ([eyes, mouth, nose]) =>
-			@eyes = @eyes.concat eyes
-			@mouth = @mouth.concat mouth
-			@nose = @nose.concat nose
+		.map (assets, i) =>
+			type = types[i]
+			@assets[type] = @assets[type].concat assets
 
 	index: (string) ->
 		buffer = new Buffer @identifier string
@@ -57,10 +54,10 @@ class PotatoAvatars
 
 	face: (string) ->
 		i = @index string
-		color: pull @colors, i
-		eyes: pull @eyes, i
-		nose: pull @nose, i
-		mouth: pull @mouth, i
+		face = color: pull @colors, i
+		for type in @options.types
+			face[type] = pull @assets[type], i
+		face
 
 	parseSize: (size) ->
 		size ?= @options.maxSize
@@ -77,17 +74,17 @@ class PotatoAvatars
 
 	combine: (face, size=null) ->
 		{width, height} = @parseSize size
-		imageMagick()
-			.in(face.eyes)
-			.in(face.nose)
-			.in(face.mouth)
+		img = imageMagick()
+		for type in @options.types
+			img.in face[type]
+		img
 			.background(face.color)
 			.mosaic()
 			.resize(width, height)
 			.trim()
-			.gravity('Center')
+			.gravity("Center")
 			.extent(width, height)
-			.stream('png')
+			.stream("png")
 
 	stream: (identifier, size) -> @combine @face(identifier), size
 
