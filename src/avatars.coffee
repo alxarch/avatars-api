@@ -81,7 +81,6 @@ class PotatoAvatars
 			.background(face.color)
 			.mosaic()
 			.resize(width, height)
-			.trim()
 			.gravity("Center")
 			.extent(width, height)
 			.stream("png")
